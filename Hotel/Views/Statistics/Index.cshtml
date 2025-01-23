@@ -1,0 +1,140 @@
+﻿@model HotelManager.Models.ViewModels.StatisticsViewModel
+
+@{
+    ViewData["Title"] = "Statystyki";
+}
+
+<h1>Statystyki</h1>
+
+<div class="card mt-2">
+    <div class="card-header">
+        Liczba nieletnich
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UnderageClientsCount)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                    <tr>
+                        <td>
+                        @Html.DisplayFor(modelItem => modelItem.UnderageClientsCount)
+                        </td>
+                    </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="card mt-5" >
+    <div class="card-header">
+        Niepotwierdzone rezerwacje w danym dniu
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Dzień
+                    </th>
+                    <th>
+                        Liczba
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.UnConfirmedReservations)
+                {
+                    <tr>
+                        <td>
+                            @item.Day.ToShortDateString()
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Count)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="card mt-5">
+    <div class="card-header">
+        Liczba pokoi z dużym łóżkiem na danym piętrze 
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Piętro
+                    </th>
+                    <th>
+                        Liczba
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.FloorLargeBeds)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Floor)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CountRoomsWithLargeBed)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="card mt-5">
+    <div class="card-header">
+        Rezerwacje danego klienta
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Id Klienta
+                    </th>
+                    <th>
+                        Imię
+                    </th>
+                    <th>
+                        Nazwisko
+                    </th>
+                    <th>
+                        Pokoje
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ClientRoomsReservations)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ClientId)
+                        </td>
+                        <td>
+                            @item.FirstName
+                        </td>
+                        <td>
+                            @item.LastName
+                        </td>
+                        <td>
+                            @item.Rooms
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
