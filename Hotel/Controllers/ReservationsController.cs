@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HotelManager.Data;
 using HotelManager.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using HotelManager.Services;
 
 namespace HotelManager.Controllers
 {
@@ -14,7 +16,7 @@ namespace HotelManager.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public ReservationsController(ApplicationDbContext context)
+        public ReservationsController(ApplicationDbContext context, HotelService hotelService)
         {
             _context = context;
         }
@@ -60,15 +62,27 @@ namespace HotelManager.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ReservationId,ClientId,RoomId,Date,IsConfirmed")] Reservation reservation)
-        {
+        { 
+            // Sprawdzenie, czy pokój jest już zarezerwowany na wybraną datę
+            bool isReserved = await _context.Reservations
+                .AnyAsync(r => r.RoomId == reservation.RoomId && r.Date == reservation.Date);
+
+            if (isReserved)
+            {
+                ModelState.AddModelError("RoomId", "Pokój jest już zarezerwowany w tej dacie.");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(reservation);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            // Ponowne wczytanie list rozwijanych dla poprawnego wyświetlenia widoku
             ViewData["ClientId"] = new SelectList(_context.Clients, "ClientId", "FirstName", reservation.ClientId);
             ViewData["RoomId"] = new SelectList(_context.Rooms, "RoomId", "RoomId", reservation.RoomId);
+
             return View(reservation);
         }
 

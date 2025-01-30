@@ -1,4 +1,5 @@
 using HotelManager.Data;
+using HotelManager.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +10,10 @@ builder.Services.AddControllersWithViews();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
-    //options.UseInMemoryDatabase("Hotel"));
+//options.UseInMemoryDatabase("Hotel"));
+
+// Rejestracja serwisu HotelService
+builder.Services.AddScoped<HotelService>();
 
 var app = builder.Build();
 
